@@ -1,0 +1,91 @@
+{
+  "name": "Community robot arm - v6, simplified with base rotation",
+  "_notes": [
+    "The linkage is planar and lives in a vertical half-plane that pivots about",
+    "the base axis. Inside that plane the coordinates are r (outward from the",
+    "axis, and may go negative when an arm folds back over the base) and z (up).",
+    "",
+    "Plane angles: 0 degrees points along +r, 90 degrees points along +z.",
+    "So -90 is straight down, parallel with the base axis.",
+    "",
+    "base.rotation is treated as just another control arm, named so it appears",
+    "alongside the others in robot.angles, in the step CSVs and in movements.",
+    "",
+    "role 'control'  - you drive this angle",
+    "role 'fixed'    - the angle never changes (the tool arm)",
+    "",
+    "angle_relative_to: leave it out for an angle measured from the plane itself",
+    "(what a parallelogram linkage gives you), or name another arm to measure",
+    "from that arm instead."
+  ],
+  "base": {
+    "position": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rotation": {
+      "name": "base_rotation",
+      "angle": 0.0,
+      "min_angle": -90.0,
+      "max_angle": 90.0
+    }
+  },
+  "chain": [
+    {
+      "name": "control_arm_a",
+      "start": "base",
+      "end": "elbow_a",
+      "length": 10.0,
+      "role": "control",
+      "angle": 90.0,
+      "min_angle": 45.0,
+      "max_angle": 165.0
+    },
+    {
+      "name": "main_arm",
+      "start": "elbow_a",
+      "end": "node_end",
+      "length": 10.0,
+      "role": "control",
+      "angle": 180.0,
+      "min_angle": 175.0,
+      "max_angle": {
+        "relative_to": "control_arm_a",
+        "offset": 175.0
+      },
+      "_note": "driven through the parallel linkage from control_arm_b, so its angle is absolute in the r-z plane. Because base, elbow_a, joint and elbow_b form a parallelogram, this angle is exactly control_arm_b + 180 - which is where the limits come from: control_arm_b's -5 and (control_arm_a - 5), each shifted by 180."
+    },
+    {
+      "name": "tool_arm",
+      "start": "node_end",
+      "end": "tool_tip",
+      "length": 5.0,
+      "role": "fixed",
+      "angle": 180.0,
+      "_note": "horizontal, pointing away from the base axis: same z at both ends, and it swings round with the base so it always points outward. The arm reaches into negative r, so outward is 180 degrees in the plane, not 0."
+    }
+  ],
+  "tool": {
+    "node": "tool_tip"
+  },
+  "view": {
+    "rlim": [
+      -27.0,
+      12.0
+    ],
+    "zlim": [
+      -13.0,
+      22.0
+    ],
+    "elev": 20,
+    "azim": -58
+  },
+  "areas": {
+    "control_step": 1.0,
+    "cell": 0.2,
+    "body_samples": 12,
+    "clearance": 2.0,
+    "revolve_steps": 25
+  }
+}
