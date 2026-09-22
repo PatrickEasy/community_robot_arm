@@ -1,0 +1,82 @@
+{
+  "name": "Community robot arm - five bar linkage",
+
+  "_notes": [
+    "nodes: 'fixed' nodes are pinned at x,y. 'free' nodes are solved.",
+    "        'branch' on a free node picks which of the two circle-intersection",
+    "        solutions to use (1 or -1) when the node is found from two neighbours.",
+    "vectors: role 'control' means its angle is an input you drive.",
+    "         role 'dependent' means its position falls out of the solve.",
+    "         'length' may be left out when both ends are fixed nodes - it is",
+    "         then measured from them.",
+    "         'attachments' pins another node partway along the vector, at the",
+    "         given distance from its start node. Everything on a vector is",
+    "         collinear and rigid, so any two known points fix the rest.",
+    "         min_angle / max_angle may be a number, or {relative_to, offset} to",
+    "         track another vector's angle."
+  ],
+
+  "nodes": {
+    "base":     {"type": "fixed", "x": 0.0, "y": 0.0},
+    "elbow_a":  {"type": "free"},
+    "elbow_b":  {"type": "free"},
+    "joint":    {"type": "free", "branch": 1},
+    "node_end": {"type": "free"}
+  },
+
+  "vectors": {
+    "control_arm_a": {
+      "role": "control",
+      "start": "base", "end": "elbow_a",
+      "length": 10.0,
+      "angle": 90.0,
+      "min_angle": 45.0,
+      "max_angle": 165.0
+    },
+
+    "control_arm_b": {
+      "role": "control",
+      "start": "base", "end": "elbow_b",
+      "length": 5.0,
+      "angle": 0.0,
+      "min_angle": -5.0,
+      "max_angle": {"relative_to": "control_arm_a", "offset": -5.0}
+    },
+
+    "main_arm": {
+      "role": "dependent",
+      "start": "node_end", "end": "joint",
+      "length": 15.0,
+      "attachments": {"elbow_a": 10.0}
+    },
+
+    "link_b": {
+      "role": "dependent",
+      "start": "elbow_b", "end": "joint",
+      "length": 10.0
+    }
+  },
+
+  "tool": {
+    "node": "node_end", 
+    "radius": 0.0
+  },
+
+  "view": {
+    "xlim": [-20.0, 20.0],
+    "ylim": [-20.0, 20.0]
+  },
+
+  "areas": {
+    "control_step": 1.0, 
+    "cell": 0.2,
+    "body_samples": 12,
+    "clearance": 2.0,
+    "explanations": {
+      "control_step": "The step size for each control input (degrees).",
+      "cell": "The size of the grid cells used to check for collisions.",
+      "body_samples": "The number of samples along each vector to check for collisions.",
+      "clearance": "The minimum distance from any obstacle to consider a position valid."
+    }
+  }
+}
