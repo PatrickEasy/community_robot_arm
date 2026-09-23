@@ -87,5 +87,51 @@
     "body_samples": 12,
     "clearance": 2.0,
     "revolve_steps": 25
+  },
+  "servos": {
+    "_notes": [
+      "How a joint angle from v6 becomes a servo angle for servo_control.py.",
+      "",
+      "    servo_angle = servo_at_zero + degrees_per_unit * joint_angle",
+      "",
+      "degrees_per_unit is 1.0 for a servo coupled straight to the joint, -1.0",
+      "if it turns the other way, and the gear or pulley ratio if there is a",
+      "reduction in between.",
+      "",
+      "servo_at_zero is what the servo reads when the joint is at 0 degrees -",
+      "which for most of these joints is outside their travel, so it is a",
+      "reference point rather than a pose you can stand the arm in.",
+      "",
+      "The numbers below are placeholders that put each joint's whole range",
+      "inside the servo's safe travel. Calibrate them on the real arm before",
+      "running anything: servo_map.py has a solve_offset() for exactly that.",
+      "",
+      "degrees_per_second is roughly how fast the servo slews unloaded, used",
+      "to work out how long to wait between steps. Measure it and lower it -",
+      "a loaded arm is slower, and waiting too little means the next setpoint",
+      "arrives before the servo has arrived."
+    ],
+    "library_max": 140,
+    "physical_max": 225,
+    "servo_min": 5.0,
+    "servo_max": 220.0,
+    "degrees_per_second": 180.0,
+    "joints": {
+      "base_rotation": {
+        "channel": 0,
+        "servo_at_zero": 112.5,
+        "degrees_per_unit": 1.0
+      },
+      "control_arm_a": {
+        "channel": 1,
+        "servo_at_zero": 20.0,
+        "degrees_per_unit": 1.0
+      },
+      "main_arm": {
+        "channel": 2,
+        "servo_at_zero": -130.0,
+        "degrees_per_unit": 1.0
+      }
+    }
   }
 }
